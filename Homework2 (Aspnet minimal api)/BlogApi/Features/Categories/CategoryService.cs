@@ -6,12 +6,10 @@ namespace BlogApi.Features.Categories;
 
 public class CategoryService(BlogDbContext context)
 {
-    public async Task<List<Category>> GetCategoriesAsync(int page, int size)
+    public async Task<List<Category>> GetCategoriesAsync()
     {
         return await context.Categories
             .AsNoTracking()
-            .Skip((page - 1) * size)
-            .Take(size)
             .ToListAsync();
     }
 

@@ -1,20 +1,21 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { isAxiosError } from 'axios'
 import { api } from '@/app'
-import type { Post } from './types'
+import type { CreatePost, Post, UpdatePost } from './types'
+import type { Category } from '@/features/category'
 
 export const fetchPosts = createAsyncThunk<
-    Post[],
-    { page: number; size: number; search?: string; category?: string },
+    { items: Post[]; totalCount: number },
+    { page: number; size: number; search?: string; category?: 'All' | Category },
     { rejectValue: string }
->('posts/fetchPosts', async ({ page, size, search, category }, { rejectWithValue }) => {
+>('posts/fetchPosts', async ({ page, size, search, category: categoryId }, { rejectWithValue }) => {
     try {
-        const response = await api.get<Post[]>('/posts', {
+        const response = await api.get<{ items: Post[]; totalCount: number }>('/posts', {
             params: {
-                _page: page,
-                _limit: size,
+                page,
+                size,
                 q: search || undefined,
-                category: category === 'All' ? undefined : category,
+                categoryId: categoryId === 'All' ? undefined : categoryId,
             },
         })
         return response.data
@@ -24,4 +25,20 @@ export const fetchPosts = createAsyncThunk<
         }
         return rejectWithValue('An unexpected error occurred')
     }
+})
+
+export const createPost = createAsyncThunk<Post, CreatePost>('posts/create', async (dto) => {
+    const res = await api.post<Post>('/posts', dto)
+    return res.data
+})
+
+export const updatePost = createAsyncThunk<Post, UpdatePost>('posts/update', async (dto) => {
+    await api.put('/posts', dto)
+    const res = await api.get<Post>(`/posts/${dto.id}`)
+    return res.data
+})
+
+export const deletePost = createAsyncThunk<string, string>('posts/delete', async (id) => {
+    await api.delete(`/posts/${id}`)
+    return id
 })

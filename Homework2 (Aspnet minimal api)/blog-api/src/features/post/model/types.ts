@@ -9,3 +9,14 @@ export interface Post {
     slugs: string[]
     categories: Category[]
 }
+
+export interface CreatePost {
+    title: string
+    content: string
+    slugs: string[]
+    categories: string[]
+}
+
+export interface UpdatePost extends CreatePost {
+    id: string
+}

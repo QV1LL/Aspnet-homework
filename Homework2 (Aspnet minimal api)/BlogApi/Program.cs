@@ -18,15 +18,27 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =
 builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddTransient<IFileService, FileService>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
 var context =  scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+await context.Database.EnsureCreatedAsync();
 await BlogDbSeeder.SeedAsync(context);
 
 app.UseStaticFiles();
 app.MapPosts();
 app.MapCategories();
+app.UseCors("AllowFrontend");   
 
 app.Run();

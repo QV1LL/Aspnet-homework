@@ -1,3 +1,5 @@
+using BlogApi.Domain.Entities;
+
 namespace BlogApi.Features.Posts;
 
 public record CreatePost(
@@ -12,3 +14,8 @@ public record UpdatePost(
     string Content,
     List<Guid> Categories,
     List<string> Slugs);
+    
+public record GetPosts(
+    IEnumerable<Post> Items,
+    int TotalCount 
+);

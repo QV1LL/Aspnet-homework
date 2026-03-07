@@ -1,2 +1,5 @@
 export { CategorySelect } from './ui/CategorySelect'
 export { type Category } from './model/types'
+export { categoriesReducer, selectAllCategories } from './model/slice'
+export { fetchCategories, createCategory, updateCategory, deleteCategory } from './model/actions'
+export { CategoryForm } from './ui/CategoryForm'

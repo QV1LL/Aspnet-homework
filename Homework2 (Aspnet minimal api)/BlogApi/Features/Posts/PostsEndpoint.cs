@@ -11,14 +11,14 @@ public static class PostsEndpoint
     {
         var group = app.MapGroup("/api/posts");
 
-        group.MapGet("/", async (PostService postService, string? searchTerm, Guid? categoryId, int page = 1, int size = 10) =>
+        group.MapGet("/", async (PostService postService, string? q, Guid? categoryId, int page = 1, int size = 10) =>
         {
             if (page < 1 || size < 1)
             {
                 return Results.BadRequest("Page and Size must be greater than 0");
             }
             
-            var posts = await postService.GetPostsAsync(page, size, categoryId, searchTerm);
+            var posts = await postService.GetPostsAsync(page, size, categoryId, q);
             
             return Results.Ok(posts);
         });

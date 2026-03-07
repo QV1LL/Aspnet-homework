@@ -8,14 +8,9 @@ public static class CategoryEndpoints
     {
         var group = app.MapGroup("/api/categories");
 
-        group.MapGet("/", async (CategoryService categoryService, int page = 1, int size = 10) =>
+        group.MapGet("/", async (CategoryService categoryService) =>
         {
-            if (page < 1 || size < 1)
-            {
-                return Results.BadRequest("Page and Size must be greater than 0");
-            }
-            
-            var categories = await categoryService.GetCategoriesAsync(page, size);
+            var categories = await categoryService.GetCategoriesAsync();
             
             return Results.Ok(categories);
         });
