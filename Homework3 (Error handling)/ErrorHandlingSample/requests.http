@@ -1,0 +1,14 @@
+@ErrorHandlingSample_HostAddress = http://localhost:5102
+
+POST {{ErrorHandlingSample_HostAddress}}/order?name=latte
+Accept: application/json
+
+###
+
+POST {{ErrorHandlingSample_HostAddress}}/order?name=tea
+Accept: application/json
+
+###
+
+POST {{ErrorHandlingSample_HostAddress}}/order?name=espresso
+Accept: application/json
