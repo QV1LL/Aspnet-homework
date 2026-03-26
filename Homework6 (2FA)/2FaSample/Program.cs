@@ -1,6 +1,7 @@
 using System.Text;
 using _2FaSample.Features.Auth;
 using _2FaSample.Features.Profile;
+using _2FaSample.Features.PushNotifications;
 using _2FaSample.Infrastructure.Services;
 using _2FaSample.Models;
 using _2FaSample.Persistence;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using WebPush;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,8 +75,27 @@ builder.Services.AddCors(options =>
             .AllowCredentials(); 
     });
 });
-
 builder.Services.AddAuthorization();
+var vapidSection = builder.Configuration.GetSection("VapidDetails");
+var vapidDetails = new VapidDetails(
+    vapidSection["Subject"],
+    vapidSection["PublicKey"],
+    vapidSection["PrivateKey"]
+);
+
+builder.Services.AddSingleton(vapidDetails);
+builder.Services.AddSingleton<WebPushClient>(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var client = new WebPushClient();
+    
+    client.SetVapidDetails(
+        subject: configuration["Vapid:Subject"],
+        publicKey: configuration["Vapid:PublicKey"],
+        privateKey: configuration["Vapid:PrivateKey"]
+    );
+    return client;
+});
 builder.Services.AddTransient<IEmailSender<AppUser>, EmailSender>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<SmsService>();
@@ -93,5 +114,6 @@ app.UseAuthorization();
 
 app.MapAuthEndpoints();
 app.MapProfileEndpoint();
+app.MapPushNotificationsEndpoint();
 
 app.Run();

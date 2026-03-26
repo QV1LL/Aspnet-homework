@@ -7,6 +7,8 @@ namespace _2FaSample.Persistence;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<AppUser>(options)
 {
+    public DbSet<PushSubscription> PushSubscriptions => Set<PushSubscription>();
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

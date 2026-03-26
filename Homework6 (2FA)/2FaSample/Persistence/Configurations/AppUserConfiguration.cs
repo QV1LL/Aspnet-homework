@@ -18,5 +18,10 @@ public class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
                     : JsonSerializer.Deserialize<List<TwoFactorMethod>>(v, (JsonSerializerOptions?)null) ?? new List<TwoFactorMethod>()
             )
             .HasColumnType("TEXT");
+        
+        builder.HasMany<PushSubscription>()
+            .WithOne(ps => ps.User)
+            .HasForeignKey(ps => ps.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
