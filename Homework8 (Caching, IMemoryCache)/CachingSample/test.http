@@ -1,0 +1,35 @@
+@Host = http://localhost:5146
+@PostId = 18fb9b2b-de50-4ef0-aabd-02ef843e7d98
+
+### Create a New Post
+POST {{Host}}/api/posts
+Content-Type: application/json
+
+{
+  "title": "First Post",
+  "content": "This is the initial content."
+}
+
+### Get Post by ID (Cache Miss/Hit)
+GET {{Host}}/api/posts/{{PostId}}
+
+### Update Post (Triggers Cache Eviction)
+PUT {{Host}}/api/posts/{{PostId}}
+Content-Type: application/json
+
+{
+  "title": "Updated Post Title",
+  "content": "This content has been modified."
+}
+
+### Verify Cache Eviction (Should fetch fresh from DB)
+GET {{Host}}/api/posts/{{PostId}}
+
+### Test Validation (Unprocessable Entity)
+POST {{Host}}/api/posts
+Content-Type: application/json
+
+{
+  "title": "",
+  "content": ""
+}
