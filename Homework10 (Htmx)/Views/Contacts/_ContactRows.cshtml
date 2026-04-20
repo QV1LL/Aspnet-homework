@@ -1,0 +1,35 @@
+@model IReadOnlyCollection<Contact>
+
+@if (Model.Any())
+{
+    foreach (var contact in Model)
+    {
+        <tr hx-target="this" hx-swap="outerHTML">
+            <td class="align-middle">@contact.Name</td>
+            <td class="align-middle">@contact.Email</td>
+            <td class="align-middle">@contact.Phone</td>
+            <td class="text-end">
+                <button class="btn btn-sm btn-outline-primary" 
+                        hx-get="/Contacts/@contact.Id/Edit">
+                    Edit
+                </button>
+                
+                <button class="btn btn-sm btn-outline-danger"
+                        hx-delete="/Contacts/@contact.Id/Delete"
+                        hx-confirm="Ви впевнені?"
+                        hx-target="closest tr"
+                        hx-swap="outerHTML swap:250ms">
+                    Delete
+                </button>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr>
+        <td colspan="4" class="text-center text-muted py-4">
+            No contacts found matching your search.
+        </td>
+    </tr>
+}

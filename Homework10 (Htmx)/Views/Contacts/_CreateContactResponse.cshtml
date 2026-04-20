@@ -1,0 +1,5 @@
+@model (Contact contact, int count)
+
+<partial name="_ContactRows" model="@new List<Contact>() { @Model.contact }.AsReadOnly()"/>
+
+<span id="contact-count" hx-swap-oob="true" class="badge bg-primary">@Model.count</span>
